@@ -2,6 +2,12 @@ let token;
 let expiresIn;
 const clientID = "ea39a7e792e348418109492c88c8e91d";
 const redirectURI = "http://marinabir94.surge.sh";
+let accessToken = Spotify.getAccessToken();
+const headersGET = { Authorization: `Bearer ${accessToken}` };
+const headersPOST = { 
+  'Authorization': `Bearer ${accessToken}`,
+  'Content-Type': 'application/json' 
+};
 
 const Spotify = {
   getAccessToken() {
@@ -25,6 +31,18 @@ const Spotify = {
     } else {
       window.location = `https://accounts.spotify.com/authorize?client_id=${clientID}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
     }
+  },
+
+  getUserId(){
+    let userID;
+    let playlistID;
+
+    //GET - Return user's ID
+    return fetch(`https://api.spotify.com/v1/me`, { headers: headersGET })
+      .then(response => response.json())
+      .then(jsonResponse => {
+        userID = jsonResponse.id;
+        console.log(`getUserId - User ID: ${userID}`);
   },
 
   search(term) {
@@ -53,21 +71,8 @@ const Spotify = {
     if (!playlistName || !arrURIs.length) {
       return;
     }
-    const accessToken = Spotify.getAccessToken();
-    const headersGET = { Authorization: `Bearer ${accessToken}` };
-    const headersPOST = { 
-			'Authorization': `Bearer ${accessToken}`,
-			'Content-Type': 'application/json' 
-		};
-    let userID;
-    let playlistID;
-
-    //GET - Return user's ID
-    return fetch(`https://api.spotify.com/v1/me`, { headers: headersGET })
-      .then(response => response.json())
-      .then(jsonResponse => {
-        userID = jsonResponse.id;
-        console.log(`User ID: ${userID}`);
+    
+    
         //POST - We use the userID to create a Playlist ID
         return fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
           headers: headersPOST,
