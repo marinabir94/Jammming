@@ -107,6 +107,7 @@ class App extends React.Component {
               playlistTracks={this.state.playlistTracks}
               onRemove={this.removeTrack}
               onNameChange={this.updatePlaylistName}
+              onSave={this.savePlaylist}
             />
           </div>
         </div>
@@ -114,9 +115,9 @@ class App extends React.Component {
     );
   }
 
-  // componentDidMount() {
-  //   window.addEventListener('load', () => {Spotify.getAccessToken()});
-  // }
+  componentDidMount() {
+     window.addEventListener('load', () => {Spotify.getAccessToken()});
+  }
 }
 
 export default App;
