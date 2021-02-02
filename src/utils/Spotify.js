@@ -3,6 +3,7 @@ const Spotify = {
   expiresIn : null,
   clientID : "ea39a7e792e348418109492c88c8e91d",
   redirectURI : "http://marinabir94.surge.sh",
+  //redirectURI : "http://localhost:3000",
  
 
   getAccessToken() {
@@ -28,17 +29,17 @@ const Spotify = {
     }
   },
 
-
   getUserId(){
+    let userID;
     const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/me`;
     //GET - Return user's ID
     return fetch(url, { headers: headersGET })
-      .then(response => {
-        if(response.ok){
-          return response.json();
-        }
-      }).then(jsonResponse => jsonResponse.id);
+      .then(response => response.json())
+      .then(jsonResponse => {
+        userID = jsonResponse.id;
+        console.log(`1) getUserId: ${userID}`);
+        return userID})
   },
 
   search(term) {
@@ -68,7 +69,7 @@ const Spotify = {
       'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json' 
     };
-    console.log(`createPlaylist User ID: ${userID}`)
+    console.log(`2) createPlaylist User ID: ${userID}`)
     const url =`https://api.spotify.com/v1/users/${userID}/playlists`;
     //POST - We use the userID to create a Playlist ID
     return fetch(url, {
@@ -79,11 +80,12 @@ const Spotify = {
         description: "New playlist description",
         public: true
       })
-    }).then(response => {
-      if (response.ok) {
-          return response.json();
-      }
-    });
+    })
+    // .then(response => {
+    //   if (response.ok) {
+    //       return response.json();
+    //   }
+    // });
   },
 
   saveToPlaylist(playlistName, arrURIs) {
@@ -99,32 +101,85 @@ const Spotify = {
       return this.createPlaylist(response, playlistName)
     }).then(response => {
       const playlistID = response.id;
+      console.log(`3)playlistID: ${playlistID}`);
       const url = `https://api.spotify.com/v1/playlists/${playlistID}/tracks`;
-      return fetch(url, {
+      return fetch(url, { 
           method: 'POST',
           headers: headersPOST,
           body: JSON.stringify({
             uris: arrURIs
         })
       });
-    }).then(response => {
-      if (response.ok){
-          return response.json();
-      }
-    });        
+    })
+    // .then(response => {
+    //   if (response.ok){
+    //       return response.json();
+    //   }
+    // });        
   },
 
+  
+  // savePlaylist(playlistName, arrURIs) {
+  //   if (!playlistName || !arrURIs.length) {
+  //     return;
+  //   }
+  //   const accessToken = Spotify.getAccessToken();
+  //   const headersGET = { Authorization: `Bearer ${accessToken}` };
+  //   const headersPOST = { 
+	// 		'Authorization': `Bearer ${accessToken}`,
+	// 		'Content-Type': 'application/json' 
+	// 	};
+  //   let userID;
+  //   let playlistID;
+
+  //   //GET - Return user's ID
+  //   return fetch(`https://api.spotify.com/v1/me`, { headers: headersGET })
+  //     .then(response => response.json())
+  //     .then(jsonResponse => {
+  //       userID = jsonResponse.id;
+  //       console.log(`User ID: ${userID}`);
+  //       //POST - We use the userID to create a Playlist ID
+  //       return fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+  //         headers: headersPOST,
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           name: playlistName,
+  //           description: "New playlist description",
+  //           public: true
+  //         }),
+  //       })
+  //         .then(response => response.json())
+  //         .then(jsonResponse => {
+  //           playlistID = jsonResponse.id;
+  //           console.log(`playlistID: ${playlistID}`);
+  //           //POST - We use the Playlist ID to upload tracks to that playlist
+  //           return fetch(
+  //             `https://api.spotify.com/v1/users/${userID}/playlists/${playlistID}/tracks`,
+  //             {
+  //               headers: headersPOST,
+  //               method: "POST",
+  //               body: JSON.stringify({
+  //                 uris: arrURIs
+  //               })
+  //             }
+  //           );
+  //         });
+  //     });
+  // },
+
   savePlaylist(playlistName, arrURIs){
-    const userID = Spotify.getUserId();
-    console.log(`savePlaylist User ID: ${userID}`)
-    return Spotify.createPlaylist(userID, playlistName)
-    .then(Spotify.saveToPlaylist(playlistName, arrURIs));
+    const userID = this.getUserId();
+    this.getUserId().then(this.createPlaylist(userID, playlistName))
+    .then(this.saveToPlaylist(playlistName, arrURIs))
+    .then(console.log(`4) savePlaylist: ${userID}`));
   },
 
   componentDidMount() {
     window.addEventListener("load", () => {
       Spotify.getAccessToken();
     });
+
+
   },
 };
 
