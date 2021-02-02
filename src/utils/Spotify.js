@@ -28,16 +28,12 @@ const Spotify = {
     }
   },
 
-  headersGET : { Authorization: `Bearer ${this.accessToken}` },
-  headersPOST : { 
-    'Authorization': `Bearer ${this.accessToken}`,
-    'Content-Type': 'application/json' 
-  },
 
   getUserId(){
+    const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/me`;
     //GET - Return user's ID
-    return fetch(url, { headers: this.headersGET })
+    return fetch(url, { headers: headersGET })
       .then(response => {
         if(response.ok){
           return response.json();
@@ -46,8 +42,9 @@ const Spotify = {
   },
 
   search(term) {
+    const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/search?type=track&q=${term}`;
-    return fetch(url, {headers: this.headersGET
+    return fetch(url, {headers: headersGET
     }).then(response => {
       if(response.ok) {
         return response.json();
@@ -67,10 +64,15 @@ const Spotify = {
   },
 
   createPlaylist(userID, playlistName){
+    const headersPOST = { 
+      'Authorization': `Bearer ${this.accessToken}`,
+      'Content-Type': 'application/json' 
+    };
+    console.log(`createPlaylist User ID: ${userID}`)
     const url =`https://api.spotify.com/v1/users/${userID}/playlists`;
     //POST - We use the userID to create a Playlist ID
     return fetch(url, {
-      headers: this.headersPOST,
+      headers: headersPOST,
       method: "POST",
       body: JSON.stringify({
         name: playlistName,
@@ -85,6 +87,10 @@ const Spotify = {
   },
 
   saveToPlaylist(playlistName, arrURIs) {
+    const headersPOST = { 
+      'Authorization': `Bearer ${this.accessToken}`,
+      'Content-Type': 'application/json' 
+    };
     if (!playlistName || !arrURIs.length) {
       return;
     }    
@@ -96,7 +102,7 @@ const Spotify = {
       const url = `https://api.spotify.com/v1/playlists/${playlistID}/tracks`;
       return fetch(url, {
           method: 'POST',
-          headers: this.headersPOST,
+          headers: headersPOST,
           body: JSON.stringify({
             uris: arrURIs
         })
@@ -110,8 +116,9 @@ const Spotify = {
 
   savePlaylist(playlistName, arrURIs){
     const userID = Spotify.getUserId();
-    Spotify.createPlaylist(userID,playlistName);
-    Spotify.saveToPlaylist(playlistName, arrURIs);
+    console.log(`savePlaylist User ID: ${userID}`)
+    return Spotify.createPlaylist(userID, playlistName)
+    .then(Spotify.saveToPlaylist(playlistName, arrURIs));
   },
 
   componentDidMount() {
