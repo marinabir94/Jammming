@@ -30,6 +30,7 @@ const Spotify = {
   },
 
   getUserId(){
+    //Get the current's user ID
     let userID;
     const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/me`;
@@ -43,6 +44,7 @@ const Spotify = {
   },
 
   search(term) {
+    //Get the whole results of a search
     const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/search?type=track&q=${term}`;
     return fetch(url, {headers: headersGET
@@ -89,6 +91,26 @@ const Spotify = {
       return playlistID})
   },
 
+  getListPlaylists(){
+  //Get the whole list of playlist's of the current user
+    const headersGET = { Authorization: `Bearer ${this.accessToken}` };
+    const url = `https://api.spotify.com/v1/me/playlists`;
+    return fetch(url, {headers: headersGET
+    }).then(response => {
+      if(response.ok) {
+        return response.json();
+      }
+    }).then(jsonResponse => {
+        if (!jsonResponse.items) {
+          return [];
+        }
+        return jsonResponse.items.map((playlist) => ({
+          id : playlist.id,
+          name : playlist.name,
+        }));
+      });
+  },
+
   saveToPlaylist(playlistID, arrURIs) {
     console.log(`4) playlistID: ${playlistID}`);
     const headersPOST = { 
@@ -108,7 +130,8 @@ const Spotify = {
       });     
   },
 
-  savePlaylist(playlistName, arrURIs){
+  saveNewPlaylist(playlistName, arrURIs){
+  //Save a list of songs to a newly created playlist
     this.getUserId()
     .then(response => {
       this.createPlaylist(response, playlistName)

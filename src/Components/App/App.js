@@ -3,6 +3,7 @@ import "./App.css";
 import SearchBar from "../SearchBar/SearchBar";
 import SearchResults from "../SearchResults/SearchResults";
 import Playlist from "../Playlist/Playlist";
+import PlaylistList from "../PlaylistList/PlaylistList";
 import Spotify from "../../utils/Spotify";
 //import { render } from "@testing-library/react";
 
@@ -12,7 +13,13 @@ class App extends React.Component {
     this.state = {
       searchResults: [],
       playlistName: "New Playlist",
-      playlistTracks: []
+      playlistTracks: [],
+      //playlistResults: [],
+      playlistResults: [
+          { name: "playlistname1", id: 1 },
+          { name: "playlistname2", id: 2 },
+          { name: "playlistname3", id: 3 }
+      ]
       // TESTING
       // searchResults: [
       //   { name: "name1", artist: "artist1", album: "album1", id: 1 },
@@ -60,6 +67,10 @@ class App extends React.Component {
     }
   }
 
+  selectPlaylist(playlist){
+    this.setState({ playlistName : playlist.name }); 
+  }
+
   //Click handler
   removeTrack(track) {
     let currentTracks = this.state.playlistTracks;
@@ -74,7 +85,7 @@ class App extends React.Component {
   //Needs an array of URIs to be sent to the API GET method.
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map((track) => track.uri);
-    Spotify.savePlaylist(this.state.playlistName, trackURIs);
+    Spotify.saveNewPlaylist(this.state.playlistName, trackURIs);
     //.then(() => {
       //After sending the POST, we restore the default values
     this.setState({
@@ -103,6 +114,7 @@ class App extends React.Component {
               searchResults={this.state.searchResults}
               onAdd={this.addTrack}
             />
+
             <Playlist
               playlistName={this.state.playlistName}
               playlistTracks={this.state.playlistTracks}
@@ -110,6 +122,12 @@ class App extends React.Component {
               onNameChange={this.updatePlaylistName}
               onSave={this.savePlaylist}
             />
+
+            <PlaylistList
+              playlistResults={this.state.playlistResults}
+              onSelect={this.selectPlaylist}
+            />
+
           </div>
         </div>
       </div>
