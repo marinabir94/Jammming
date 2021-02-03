@@ -50,6 +50,7 @@ class App extends React.Component {
     };
 
     this.addTrack = this.addTrack.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
