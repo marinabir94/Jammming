@@ -2,8 +2,8 @@ const Spotify = {
   accessToken : '',
   expiresIn : null,
   clientID : "ea39a7e792e348418109492c88c8e91d",
-  redirectURI : "http://marinabir94.surge.sh",
-  //redirectURI : "http://localhost:3000",
+  //redirectURI : "http://marinabir94.surge.sh",
+  redirectURI : "http://localhost:3002",
  
 
   getAccessToken() {
@@ -91,13 +91,14 @@ const Spotify = {
       return playlistID})
   },
 
-  getListPlaylists(){
+  getUserPlaylists(){
   //Get the whole list of playlist's of the current user
     const headersGET = { Authorization: `Bearer ${this.accessToken}` };
     const url = `https://api.spotify.com/v1/me/playlists`;
     return fetch(url, {headers: headersGET
     }).then(response => {
       if(response.ok) {
+        console.log('Im here');
         return response.json();
       }
     }).then(jsonResponse => {
@@ -108,7 +109,29 @@ const Spotify = {
           id : playlist.id,
           name : playlist.name,
         }));
-      });
+    });
+  },
+
+  savePlaylist(playlistName, arrURIs){
+    const arrPlaylists = this.getUserPlaylists();
+
+    if(arrPlaylists.includes(playlistName)){
+      //If the playlist already exists, then save the tracks there
+      const index = arrPlaylists.indexOf(playlistName);
+      console.log(index);
+      const playlistID = arrPlaylists[index];
+      this.saveToPlaylist(playlistID, arrURIs);
+
+    } else {
+      //If the playlist does not exist yet, create a new one and save the tracks there
+      this.getUserId()
+      .then(response => {
+        this.createPlaylist(response, playlistName)
+        .then(response => {
+          return this.saveToPlaylist(response, arrURIs);
+        })
+      })
+    }
   },
 
   saveToPlaylist(playlistID, arrURIs) {
@@ -141,13 +164,6 @@ const Spotify = {
     })
   },
 
-  componentDidMount() {
-    window.addEventListener("load", () => {
-      this.getAccessToken();
-    });
-
-
-  },
 };
 
 export default Spotify;

@@ -1,6 +1,6 @@
 .PlaylistList {
-    width: 60%;
-    height: 850px;
+    width: 97%;
+    height: 500px;
     overflow-y: scroll;
     padding: .88rem;
     background-color: rgba(255, 221, 210, 0.5);

@@ -8,13 +8,13 @@ class PlaylistListItem extends React.Component{
     }
 
     selectPlaylistListItem(){
-        this.props.onSelect(this.props.playlistListItem);
+        this.props.onSelect(this.props.playlistitem);
     }
 
     render(){
         return(
             <div className="PlaylistListItem">
-                <h3>{this.props.name}</h3>
+                <h3 onClick={this.selectPlaylistListItem}>{this.props.name}</h3>
             </div>
         )
     }

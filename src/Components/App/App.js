@@ -14,13 +14,14 @@ class App extends React.Component {
       searchResults: [],
       playlistName: "New Playlist",
       playlistTracks: [],
-      //playlistResults: [],
-      playlistResults: [
-          { name: "playlistname1", id: 1 },
-          { name: "playlistname2", id: 2 },
-          { name: "playlistname3", id: 3 }
-      ]
+      playlistResults: []
+
       // TESTING
+      // playlistResults: [
+      //   { name: "playlistname1", id: 1 },
+      //   { name: "playlistname2", id: 2 },
+      //   { name: "playlistname3", id: 3 }
+      // ]
       // searchResults: [
       //   { name: "name1", artist: "artist1", album: "album1", id: 1 },
       //   { name: "name2", artist: "artist2", album: "album2", id: 2 },
@@ -86,7 +87,7 @@ class App extends React.Component {
   //Needs an array of URIs to be sent to the API GET method.
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map((track) => track.uri);
-    Spotify.saveNewPlaylist(this.state.playlistName, trackURIs);
+    Spotify.saveToPlaylist(this.state.playlistName, trackURIs);
     //.then(() => {
       //After sending the POST, we restore the default values
     this.setState({
@@ -99,6 +100,12 @@ class App extends React.Component {
   search(term) {
     Spotify.search(term).then(results => {
       this.setState({ searchResults: results });
+    })
+  }
+
+  searchUserPlaylists() {
+    Spotify.getUserPlaylists().then(results => {
+      this.setState({ playlistResults: results });
     })
   }
 
@@ -123,20 +130,23 @@ class App extends React.Component {
               onNameChange={this.updatePlaylistName}
               onSave={this.savePlaylist}
             />
+          </div>
 
             <PlaylistList
               playlistResults={this.state.playlistResults}
               onSelect={this.selectPlaylist}
             />
 
-          </div>
         </div>
       </div>
     );
   }
 
   componentDidMount() {
-     window.addEventListener('load', () => {Spotify.getAccessToken()});
+     window.addEventListener('load', () => {
+       Spotify.getAccessToken();
+       this.searchUserPlaylists();
+      });
   }
 }
 

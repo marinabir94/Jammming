@@ -5,15 +5,15 @@ import PlaylistListItem from "../PlaylistListItem/PlaylistListItem";
 class PlaylistList extends React.Component {
   render() {
     return (
-    <div className="PlaylistList">
-        <h2>Local Playlists</h2>
-        {this.props.playlistResults.map(playlistitem => {
-          return <PlaylistListItem 
-                    playlistitem={playlistitem} 
-                    id={playlistitem.id}
-                    name={playlistitem.name} 
-                    onSelect = {this.props.onSelect}/>
-        })}
+        <div className="PlaylistList">
+            <h2>Local Playlists</h2>
+            {this.props.playlistResults.map(playlistitem => {
+            return <PlaylistListItem 
+                        playlistitem={playlistitem} 
+                        key={playlistitem.id}
+                        name={playlistitem.name} 
+                        onSelect = {this.props.onSelect}/>
+            })}
       </div>
     );
   }
