@@ -87,7 +87,7 @@ class App extends React.Component {
   //Needs an array of URIs to be sent to the API GET method.
   savePlaylist() {
     const trackURIs = this.state.playlistTracks.map((track) => track.uri);
-    Spotify.saveToPlaylist(this.state.playlistName, trackURIs);
+    Spotify.savePlaylist(this.state.playlistName, trackURIs);
     //.then(() => {
       //After sending the POST, we restore the default values
     this.setState({

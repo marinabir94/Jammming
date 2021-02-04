@@ -113,13 +113,12 @@ const Spotify = {
   },
 
   savePlaylist(playlistName, arrURIs){
-    const arrPlaylists = this.getUserPlaylists();
-
-    if(arrPlaylists.includes(playlistName)){
+    this.getUserPlaylists()
+    .then(response =>{
+      const searchPlaylist = response.find(playlist => playlist.name === playlistName);
+    if(searchPlaylist){
       //If the playlist already exists, then save the tracks there
-      const index = arrPlaylists.indexOf(playlistName);
-      console.log(index);
-      const playlistID = arrPlaylists[index];
+      const playlistID = searchPlaylist.id
       this.saveToPlaylist(playlistID, arrURIs);
 
     } else {
@@ -127,15 +126,15 @@ const Spotify = {
       this.getUserId()
       .then(response => {
         this.createPlaylist(response, playlistName)
-        .then(response => {
-          return this.saveToPlaylist(response, arrURIs);
+        .then(jsonResponse => {
+          return this.saveToPlaylist(jsonResponse, arrURIs);
         })
       })
-    }
+    }})
   },
 
   saveToPlaylist(playlistID, arrURIs) {
-    console.log(`4) playlistID: ${playlistID}`);
+    console.log(`5) playlistID: ${playlistID}`);
     const headersPOST = { 
       'Authorization': `Bearer ${this.accessToken}`,
       'Content-Type': 'application/json' 
