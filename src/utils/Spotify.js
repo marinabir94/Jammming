@@ -2,8 +2,8 @@ const Spotify = {
   accessToken : '',
   expiresIn : null,
   clientID : "ea39a7e792e348418109492c88c8e91d",
-  //redirectURI : "http://marinabir94.surge.sh",
-  redirectURI : "http://localhost:3002",
+  redirectURI : "http://marinabir94.surge.sh",
+  //redirectURI : "http://localhost:3002",
  
 
   getAccessToken() {
