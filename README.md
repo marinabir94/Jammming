@@ -3,7 +3,7 @@
 In this project, I have built a React web application called Jammming which uses the Spotify API to allow users to search their own Spotify library, create a custom playlist, save it to their Spotify account or add new songs to already existing playlists.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-In order to visualize a demo, please navigate to: http://marinabir94.surge.sh/
+In order to visualize a demo, please navigate to: [Jammming](http://marinabir94.surge.sh/).
 
 ## Available Scripts
 
